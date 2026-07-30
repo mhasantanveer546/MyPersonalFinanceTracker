@@ -1,4 +1,5 @@
-from flask import Blueprint, request, session, redirect, url_for, render_template
+from flask import Blueprint, request, redirect, url_for, render_template
+from flask_login import login_user, logout_user, login_required
 from services.auth_service import register_user, login_user_check
 
 auth_bp = Blueprint("auth", __name__)
@@ -36,14 +37,14 @@ def login():
     )
 
     if result["success"]:
-        session["user_id"] = result["user"].id
-        return f"Login successful. Welcome, user {session['user_id']}!"
+        login_user(result["user"])
+        return f"Login successful. Welcome, {result['user'].username}!"
     else:
         return render_template("login.html", error=result["message"])
 
 
 @auth_bp.route("/logout")
+@login_required
 def logout():
-    session.pop("user_id", None)
+    logout_user()
     return redirect(url_for("auth.login_page"))
-
