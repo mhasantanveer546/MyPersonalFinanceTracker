@@ -1,23 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <h1>Login</h1>
-    {% if error %}<p style="color:red;">{{ error }}</p>{% endif %}
-    <form method="POST" action="/login">
-        <label for="username_or_email">Username or Email</label><br>
-        <input type="text" id="username_or_email" name="username_or_email" required><br><br>
+{% extends "base.html" %}
 
-        <label for="password">Password</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+{% block title %}Login{% endblock %}
 
-        <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="/registration">Register</a></p>
-</body>
-</html>
+{% block content %}
+
+<h1>Login</h1>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST" action="/login">
+
+    <label for="username_or_email">Username or Email</label><br>
+    <input type="text" id="username_or_email" name="username_or_email" required><br><br>
+
+    <label for="password">Password</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="submit">Login</button>
+
+</form>
+
+<p>
+    Don't have an account?
+    <a href="/registration">Register</a>
+</p>
+
+{% endblock %}

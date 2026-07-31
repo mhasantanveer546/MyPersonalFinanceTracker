@@ -1,56 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budgets</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
 
-    <h1>Budget Management</h1>
+{% block title %}Budgets{% endblock %}
 
-    <p>
-        <a href="/add-budget">Add New Budget</a>
-    </p>
+{% block content %}
 
-    <table border="1" cellpadding="8">
+<h1>Budget Management</h1>
 
-        <tr>
-            <th>Category</th>
-            <th>Limit Amount</th>
-            <th>Month</th>
-            <th>Action</th>
-        </tr>
+<p>
+    <a href="/add-budget">Add New Budget</a>
+</p>
 
-        {% for budget in budgets %}
+<table border="1" cellpadding="8">
 
-        <tr>
-            <td>{{ budget.category }}</td>
-            <td>{{ budget.limit_amount }}</td>
-            <td>{{ budget.month }}</td>
-            <td>
-                <form method="POST" action="/delete-budget/{{ budget.id }}">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
+    <tr>
+        <th>Category</th>
+        <th>Limit Amount</th>
+        <th>Month</th>
+        <th>Action</th>
+    </tr>
 
-        {% else %}
+    {% for budget in budgets %}
 
-        <tr>
-            <td colspan="4">No budgets found.</td>
-        </tr>
+    <tr>
+        <td>{{ budget.category }}</td>
+        <td>{{ budget.limit_amount }}</td>
+        <td>{{ budget.month }}</td>
+        <td>
+            <form method="POST" action="/delete-budget/{{ budget.id }}">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
 
-        {% endfor %}
+    {% else %}
 
-    </table>
+    <tr>
+        <td colspan="4">No budgets found.</td>
+    </tr>
 
-    <br>
+    {% endfor %}
 
+</table>
+
+<p>
     <a href="/transactions">View Transactions</a>
-    |
-    <a href="/logout">Logout</a>
+</p>
 
-</body>
-</html>
+{% endblock %}

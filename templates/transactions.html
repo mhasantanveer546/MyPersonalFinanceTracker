@@ -1,41 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Transactions</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <h1>Transactions</h1>
-    <p><a href="/add-transaction">Add New Transaction</a></p>
-    <table border="1" cellpadding="8">
-        <tr>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-        {% for transaction in transactions %}
-        <tr>
-            <td>{{ transaction.type }}</td>
-            <td>{{ transaction.amount }}</td>
-            <td>{{ transaction.category }}</td>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.description }}</td>
-            <td>
-                <a href="/edit-transaction/{{ transaction.id }}">Edit</a>
-                <form method="POST" action="/delete-transaction/{{ transaction.id }}" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="6">No transactions yet.</td></tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/logout">Logout</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+
+<h1>Transactions</h1>
+
+<p>
+    <a href="/add-transaction">Add New Transaction</a>
+</p>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for transaction in transactions %}
+
+    <tr>
+        <td>{{ transaction.type }}</td>
+        <td>{{ transaction.amount }}</td>
+        <td>{{ transaction.category }}</td>
+        <td>{{ transaction.date }}</td>
+        <td>{{ transaction.description }}</td>
+        <td>
+            <a href="/edit-transaction/{{ transaction.id }}">Edit</a>
+
+            <form method="POST" action="/delete-transaction/{{ transaction.id }}" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+
+    {% else %}
+
+    <tr>
+        <td colspan="6">No transactions yet.</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

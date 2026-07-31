@@ -38,7 +38,7 @@ def login():
 
     if result["success"]:
         login_user(result["user"])
-        return f"Login successful. Welcome, {result['user'].username}!"
+        return redirect(url_for("dashboard.dashboard"))
     else:
         return render_template("login.html", error=result["message"])
 

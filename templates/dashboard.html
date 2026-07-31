@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<h1>Dashboard</h1>
+
+<div class="summary-cards">
+    <div class="card">
+        <h3>Total Income</h3>
+        <p>{{ summary.total_income }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Expense</h3>
+        <p>{{ summary.total_expense }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Balance</h3>
+        <p>{{ summary.balance }}</p>
+    </div>
+</div>
+
+<h2>Budget Progress</h2>
+
+{% for b in budget_progress %}
+
+<div class="budget-bar">
+
+    <p>
+        {{ b.category }} —
+        {{ b.total_spent }} / {{ b.limit_amount }}
+        ({{ b.percent_used }}%)
+    </p>
+
+    <div class="bar-outer">
+
+        {% if b.percent_used > 100 %}
+            <div class="bar-inner" style="width:100%;"></div>
+        {% else %}
+            <div class="bar-inner" style="width:{{ b.percent_used }}%;"></div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% else %}
+
+<p>No budgets set for this month yet.</p>
+
+{% endfor %}
+
+<h2>Expense Distribution</h2>
+
+<canvas id="expenseChart" width="400" height="300"></canvas>
+
+<h2>Income vs Expense (Monthly)</h2>
+
+<canvas id="trendChart" width="600" height="300"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+<script>
+
+const expenseData = {{ expense_by_category | default({}, true) | tojson }};
+
+const trendData = {{ income_vs_expense | default({}, true) | tojson }};
+
+if (Object.keys(expenseData).length > 0) {
+
+    new Chart(document.getElementById("expenseChart"), {
+
+        type: "pie",
+
+        data: {
+            labels: Object.keys(expenseData),
+
+            datasets: [{
+                data: Object.values(expenseData),
+                backgroundColor: [
+                    "#4f46e5",
+                    "#8b5cf6",
+                    "#a78bfa",
+                    "#6366f1",
+                    "#7c3aed",
+                    "#c4b5fd"
+                ]
+            }]
+        }
+
+    });
+
+}
+
+const months = Object.keys(trendData).sort();
+
+if (months.length > 0) {
+
+    new Chart(document.getElementById("trendChart"), {
+
+        type: "line",
+
+        data: {
+
+            labels: months,
+
+            datasets: [
+
+                {
+                    label: "Income",
+                    data: months.map(month => trendData[month].income),
+                    borderColor: "#4f46e5",
+                    fill: false
+                },
+
+                {
+                    label: "Expense",
+                    data: months.map(month => trendData[month].expense),
+                    borderColor: "#dc2626",
+                    fill: false
+                }
+
+            ]
+
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}
