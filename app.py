@@ -9,11 +9,13 @@ from routes.transaction_routes import transaction_bp
 from models.budget import Budget
 from routes.budget_routes import budget_bp
 from routes.dashboard_routes import dashboard_bp
+from routes.report_routes import report_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 app.register_blueprint(auth_bp)
+app.register_blueprint(report_bp)
 app.register_blueprint(budget_bp)
 app.register_blueprint(transaction_bp)
 app.register_blueprint(dashboard_bp)
