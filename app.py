@@ -7,11 +7,13 @@ from flask_login import LoginManager
 from models.transaction import Transaction
 from routes.transaction_routes import transaction_bp
 from models.budget import Budget
+from routes.budget_routes import budget_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 app.register_blueprint(auth_bp)
+app.register_blueprint(budget_bp)
 app.register_blueprint(transaction_bp)
 
 login_manager = LoginManager()

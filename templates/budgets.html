@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budgets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <h1>Budget Management</h1>
+
+    <p>
+        <a href="/add-budget">Add New Budget</a>
+    </p>
+
+    <table border="1" cellpadding="8">
+
+        <tr>
+            <th>Category</th>
+            <th>Limit Amount</th>
+            <th>Month</th>
+            <th>Action</th>
+        </tr>
+
+        {% for budget in budgets %}
+
+        <tr>
+            <td>{{ budget.category }}</td>
+            <td>{{ budget.limit_amount }}</td>
+            <td>{{ budget.month }}</td>
+            <td>
+                <form method="POST" action="/delete-budget/{{ budget.id }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+
+        {% else %}
+
+        <tr>
+            <td colspan="4">No budgets found.</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    <a href="/transactions">View Transactions</a>
+    |
+    <a href="/logout">Logout</a>
+
+</body>
+</html>
