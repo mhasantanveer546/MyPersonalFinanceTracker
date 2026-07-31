@@ -5,12 +5,14 @@ from models.user import User
 from routes.auth_routes import auth_bp
 from flask_login import LoginManager
 from models.transaction import Transaction
+from routes.transaction_routes import transaction_bp
 from models.budget import Budget
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 app.register_blueprint(auth_bp)
+app.register_blueprint(transaction_bp)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
