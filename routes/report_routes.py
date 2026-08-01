@@ -2,6 +2,7 @@ from flask import Blueprint, Response, render_template, request
 from flask_login import login_required, current_user
 from services.analytics_service import get_summary, get_expense_by_category
 from services.analytics_service import get_summary, get_expense_by_category, get_expense_by_category_for_month
+from analytics.reports import generate_csv_report, generate_pdf_report
 
 report_bp = Blueprint("report", __name__)
 
