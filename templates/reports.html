@@ -3,6 +3,13 @@
 {% block content %}
 <h1>Reports</h1>
 
+<h2>Filter by Month</h2>
+<form method="GET" action="/reports">
+    <label for="month">Month</label><br>
+    <input type="month" id="month" name="month" value="{{ request.args.get('month', '') }}">
+    <button type="submit">Apply</button>
+</form>
+
 <h2>Spending Summary</h2>
 <p>Total Income: {{ summary.total_income }}</p>
 <p>Total Expenses: {{ summary.total_expense }}</p>
@@ -20,8 +27,8 @@
 
 <h2>Export</h2>
 <p>
-    <a href="/reports/csv">Download CSV</a>
+    <a href="/reports/csv?month={{ request.args.get('month', '') }}">Download CSV</a>
     |
-    <a href="/reports/pdf">Download PDF</a>
+    <a href="/reports/pdf?month={{ request.args.get('month', '') }}">Download PDF</a>
 </p>
 {% endblock %}

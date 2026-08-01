@@ -47,6 +47,10 @@
 
     </div>
 
+    {% if b.alert %}
+    <p class="budget-alert">{{ b.alert }}</p>
+    {% endif %}
+
 </div>
 
 {% else %}

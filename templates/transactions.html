@@ -10,7 +10,54 @@
     <a href="/add-transaction">Add New Transaction</a>
 </p>
 
+<h2>Filter Transactions</h2>
+
+<form method="GET" action="/transactions">
+
+    <label for="type">Type</label><br>
+    <select id="type" name="type">
+        <option value="">All</option>
+        <option value="income" {% if request.args.get('type') == 'income' %}selected{% endif %}>Income</option>
+        <option value="expense" {% if request.args.get('type') == 'expense' %}selected{% endif %}>Expense</option>
+    </select>
+
+    <br><br>
+
+    <label for="category">Category</label><br>
+    <input
+        type="text"
+        id="category"
+        name="category"
+        value="{{ request.args.get('category', '') }}">
+
+    <br><br>
+
+    <label for="start_date">Start Date</label><br>
+    <input
+        type="date"
+        id="start_date"
+        name="start_date"
+        value="{{ request.args.get('start_date', '') }}">
+
+    <br><br>
+
+    <label for="end_date">End Date</label><br>
+    <input
+        type="date"
+        id="end_date"
+        name="end_date"
+        value="{{ request.args.get('end_date', '') }}">
+
+    <br><br>
+
+    <button type="submit">Apply Filters</button>
+
+</form>
+
+<br>
+
 <table border="1" cellpadding="8">
+
     <tr>
         <th>Type</th>
         <th>Amount</th>
@@ -40,7 +87,7 @@
     {% else %}
 
     <tr>
-        <td colspan="6">No transactions yet.</td>
+        <td colspan="6">No transactions found.</td>
     </tr>
 
     {% endfor %}

@@ -1,5 +1,5 @@
 from models.transaction import Transaction
-from services.budget_service import get_budgets, get_budget_status
+from services.budget_service import get_budgets, get_budget_status, get_budget_alert
 from sqlalchemy import extract
 from datetime import date
 
@@ -9,11 +9,18 @@ def get_previous_month(month):
         return f"{year - 1}-12"
     return f"{year}-{month_num - 1:02d}"
 
-def get_summary(user_id):
-    transactions = Transaction.query.filter_by(user_id=user_id).all()
+def get_summary(user_id, month=None):
+    query = Transaction.query.filter_by(user_id=user_id)
+    if month:
+        year, month_num = month.split("-")
+        query = query.filter(
+            extract("year", Transaction.date) == int(year),
+            extract("month", Transaction.date) == int(month_num)
+        )
+    transactions = query.all()
+
     total_income = sum(t.amount for t in transactions if t.type == 'income')
     total_expense = sum(t.amount for t in transactions if t.type == 'expense')
-
     balance = total_income - total_expense
 
     return {
@@ -48,6 +55,7 @@ def get_income_vs_expense_by_month(user_id):
         monthly_summary[key][t.type] += t.amount
     return monthly_summary
 
+
 def get_budget_progress(user_id, month):
     budgets = get_budgets(user_id, month=month)
     progress = []
@@ -55,7 +63,9 @@ def get_budget_progress(user_id, month):
     for budget in budgets:
         status = get_budget_status(user_id, month, budget.category)
         if status["success"]:
-            progress.append(status["budget"])
+            budget_data = status["budget"]
+            budget_data["alert"] = get_budget_alert(budget_data["percent_used"])
+            progress.append(budget_data)
 
     return progress
 

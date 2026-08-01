@@ -67,3 +67,20 @@ def edit_transaction_route(transaction_id):
         return redirect(url_for("transaction.view_transactions"))
     else:
         return result["message"], 404
+
+@transaction_bp.route("/transactions", methods=["GET"])
+@login_required
+def view_transactions():
+    type_filter = request.args.get("type")
+    category_filter = request.args.get("category")
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    transactions = get_transactions(
+        current_user.id,
+        type=type_filter,
+        category=category_filter,
+        start_date=start_date,
+        end_date=end_date
+    )
+    return render_template("transactions.html", transactions=transactions)
