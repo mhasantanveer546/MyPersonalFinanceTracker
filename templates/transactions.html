@@ -1,97 +1,66 @@
 {% extends "base.html" %}
-
 {% block title %}Transactions{% endblock %}
-
 {% block content %}
+<div class="page-header">
+    <h1>Transactions</h1>
+    <a href="/add-transaction" class="btn btn-primary">+ Add Transaction</a>
+</div>
 
-<h1>Transactions</h1>
+<div class="card mt-4">
+    <h2>Filter</h2>
+    <form method="GET" action="/transactions" class="grid grid-3" style="align-items:end;">
+        <div class="form-group">
+            <label for="type">Type</label>
+            <select id="type" name="type">
+                <option value="">All</option>
+                <option value="income" {% if request.args.get('type') == 'income' %}selected{% endif %}>Income</option>
+                <option value="expense" {% if request.args.get('type') == 'expense' %}selected{% endif %}>Expense</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" value="{{ request.args.get('category', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="start_date">Start Date</label>
+            <input type="date" id="start_date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="end_date">End Date</label>
+            <input type="date" id="end_date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+    </form>
+</div>
 
-<p>
-    <a href="/add-transaction">Add New Transaction</a>
-</p>
-
-<h2>Filter Transactions</h2>
-
-<form method="GET" action="/transactions">
-
-    <label for="type">Type</label><br>
-    <select id="type" name="type">
-        <option value="">All</option>
-        <option value="income" {% if request.args.get('type') == 'income' %}selected{% endif %}>Income</option>
-        <option value="expense" {% if request.args.get('type') == 'expense' %}selected{% endif %}>Expense</option>
-    </select>
-
-    <br><br>
-
-    <label for="category">Category</label><br>
-    <input
-        type="text"
-        id="category"
-        name="category"
-        value="{{ request.args.get('category', '') }}">
-
-    <br><br>
-
-    <label for="start_date">Start Date</label><br>
-    <input
-        type="date"
-        id="start_date"
-        name="start_date"
-        value="{{ request.args.get('start_date', '') }}">
-
-    <br><br>
-
-    <label for="end_date">End Date</label><br>
-    <input
-        type="date"
-        id="end_date"
-        name="end_date"
-        value="{{ request.args.get('end_date', '') }}">
-
-    <br><br>
-
-    <button type="submit">Apply Filters</button>
-
-</form>
-
-<br>
-
-<table border="1" cellpadding="8">
-
-    <tr>
-        <th>Type</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Date</th>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-
-    {% for transaction in transactions %}
-
-    <tr>
-        <td>{{ transaction.type }}</td>
-        <td>{{ transaction.amount }}</td>
-        <td>{{ transaction.category }}</td>
-        <td>{{ transaction.date }}</td>
-        <td>{{ transaction.description }}</td>
-        <td>
-            <a href="/edit-transaction/{{ transaction.id }}">Edit</a>
-
-            <form method="POST" action="/delete-transaction/{{ transaction.id }}" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-
-    {% else %}
-
-    <tr>
-        <td colspan="6">No transactions found.</td>
-    </tr>
-
-    {% endfor %}
-
-</table>
-
+<div class="card table-card mt-4">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th><th>Amount</th><th>Category</th><th>Date</th><th>Description</th><th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td><span class="badge {{ 'badge-success' if transaction.type == 'income' else 'badge-danger' }}">{{ transaction.type }}</span></td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.category }}</td>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td class="action-btns">
+                        <a href="/edit-transaction/{{ transaction.id }}" class="btn btn-secondary btn-sm">Edit</a>
+                        <form method="POST" action="/delete-transaction/{{ transaction.id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted">No transactions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

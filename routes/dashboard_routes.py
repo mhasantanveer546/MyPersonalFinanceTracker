@@ -5,7 +5,8 @@ from services.analytics_service import (
     get_summary,
     get_expense_by_category,
     get_income_vs_expense_by_month,
-    get_budget_progress
+    get_budget_progress,
+    get_monthly_savings
 )
 from ai.recommendation import get_spending_analysis, get_smart_suggestion
 from ai.anomaly_detection import detect_unusual_spending
@@ -28,6 +29,7 @@ def dashboard():
     smart_suggestion = get_smart_suggestion(current_user.id, current_month)
     unusual_spending = detect_unusual_spending(current_user.id)
     predicted_expense = predict_next_month_expense(current_user.id)
+    monthly_savings = get_monthly_savings(current_user.id)
 
     return render_template(
         "dashboard.html",
@@ -38,5 +40,6 @@ def dashboard():
         spending_insights=spending_insights,
         smart_suggestion=smart_suggestion,
         unusual_spending=unusual_spending,
-        predicted_expense=predicted_expense
+        predicted_expense=predicted_expense,
+        monthly_savings=monthly_savings
     )

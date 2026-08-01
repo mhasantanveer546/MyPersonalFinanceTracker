@@ -1,34 +1,55 @@
 {% extends "base.html" %}
 {% block title %}Reports{% endblock %}
 {% block content %}
-<h1>Reports</h1>
+<div class="page-header"><h1>Reports</h1></div>
 
-<h2>Filter by Month</h2>
-<form method="GET" action="/reports">
-    <label for="month">Month</label><br>
-    <input type="month" id="month" name="month" value="{{ request.args.get('month', '') }}">
-    <button type="submit">Apply</button>
-</form>
+<div class="card mt-4">
+    <h2>Filter by Month</h2>
+    <form method="GET" action="/reports" class="grid grid-2" style="align-items:end;">
+        <div class="form-group">
+            <label for="month">Month</label>
+            <input type="month" id="month" name="month" value="{{ request.args.get('month', '') }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+</div>
 
-<h2>Spending Summary</h2>
-<p>Total Income: {{ summary.total_income }}</p>
-<p>Total Expenses: {{ summary.total_expense }}</p>
-<p>Balance: {{ summary.balance }}</p>
+<div class="grid grid-3 mt-4">
+    <div class="card stat-card">
+        <div class="stat-icon icon-income">↑</div>
+        <div class="stat-info"><h3>Total Income</h3><p class="stat-value">{{ summary.total_income }}</p></div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-expense">↓</div>
+        <div class="stat-info"><h3>Total Expenses</h3><p class="stat-value">{{ summary.total_expense }}</p></div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-balance">=</div>
+        <div class="stat-info"><h3>Balance</h3><p class="stat-value">{{ summary.balance }}</p></div>
+    </div>
+</div>
 
-<h2>Category-wise Breakdown</h2>
-<table border="1" cellpadding="8">
-    <tr><th>Category</th><th>Total Spent</th></tr>
-    {% for category, amount in expense_by_category.items() %}
-    <tr><td>{{ category }}</td><td>{{ amount }}</td></tr>
-    {% else %}
-    <tr><td colspan="2">No expenses recorded yet.</td></tr>
-    {% endfor %}
-</table>
+<div class="card table-card mt-4">
+    <h2 style="padding:1.5rem 1.5rem 0;">Category-wise Breakdown</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Category</th><th>Total Spent</th></tr></thead>
+            <tbody>
+                {% for category, amount in expense_by_category.items() %}
+                <tr><td>{{ category }}</td><td>{{ amount }}</td></tr>
+                {% else %}
+                <tr><td colspan="2" class="text-center text-muted">No expenses recorded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<h2>Export</h2>
-<p>
-    <a href="/reports/csv?month={{ request.args.get('month', '') }}">Download CSV</a>
-    |
-    <a href="/reports/pdf?month={{ request.args.get('month', '') }}">Download PDF</a>
-</p>
+<div class="card mt-4 text-center">
+    <h2>Export</h2>
+    <div class="action-btns" style="justify-content:center;">
+        <a href="/reports/csv?month={{ request.args.get('month', '') }}" class="btn btn-secondary">Download CSV</a>
+        <a href="/reports/pdf?month={{ request.args.get('month', '') }}" class="btn btn-secondary">Download PDF</a>
+    </div>
+</div>
 {% endblock %}

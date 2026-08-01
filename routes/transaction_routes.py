@@ -19,9 +19,7 @@ def add_transaction_route():
     amount = float(request.form.get("amount"))
     date = request.form.get("date")
     description = request.form.get("description")
-
     result = add_transaction(current_user.id, type, category, amount, date, description)
-
     if result["success"]:
         return redirect(url_for("transaction.view_transactions"))
     else:
@@ -31,14 +29,26 @@ def add_transaction_route():
 @transaction_bp.route("/transactions", methods=["GET"])
 @login_required
 def view_transactions():
-    transactions = get_transactions(current_user.id)
+    type_filter = request.args.get("type")
+    category_filter = request.args.get("category")
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+    transactions = get_transactions(
+        current_user.id,
+        type=type_filter,
+        category=category_filter,
+        start_date=start_date,
+        end_date=end_date
+    )
     return render_template("transactions.html", transactions=transactions)
+
 
 @transaction_bp.route("/delete-transaction/<int:transaction_id>", methods=["POST"])
 @login_required
 def delete_transaction_route(transaction_id):
     delete_transaction(transaction_id, current_user.id)
     return redirect(url_for("transaction.view_transactions"))
+
 
 @transaction_bp.route("/edit-transaction/<int:transaction_id>", methods=["GET"])
 @login_required
@@ -57,30 +67,11 @@ def edit_transaction_route(transaction_id):
     amount = float(request.form.get("amount"))
     date = request.form.get("date")
     description = request.form.get("description")
-
     result = edit_transaction(
         transaction_id, current_user.id,
         type=type, category=category, amount=amount, date=date, description=description
     )
-
     if result["success"]:
         return redirect(url_for("transaction.view_transactions"))
     else:
         return result["message"], 404
-
-@transaction_bp.route("/transactions", methods=["GET"])
-@login_required
-def view_transactions():
-    type_filter = request.args.get("type")
-    category_filter = request.args.get("category")
-    start_date = request.args.get("start_date")
-    end_date = request.args.get("end_date")
-
-    transactions = get_transactions(
-        current_user.id,
-        type=type_filter,
-        category=category_filter,
-        start_date=start_date,
-        end_date=end_date
-    )
-    return render_template("transactions.html", transactions=transactions)

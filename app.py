@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,render_template
 from config import Config
 from models import db
 from models.user import User
@@ -10,6 +10,7 @@ from models.budget import Budget
 from routes.budget_routes import budget_bp
 from routes.dashboard_routes import dashboard_bp
 from routes.report_routes import report_bp
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -33,7 +34,7 @@ with app.app_context():
 
 @app.route("/")
 def home():
-    return "Welcome to the Finance Tracker!"
+    return render_template("index.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

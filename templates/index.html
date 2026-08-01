@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Finance Tracker{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>Take Control of Your Money</h1>
+    <p>Track income and expenses, set budgets, and get AI-powered insights into your spending — all in one place.</p>
+    <div class="hero-buttons">
+        <a href="/registration" class="btn btn-light">Get Started</a>
+        <a href="/login" class="btn btn-outline-light">Login</a>
+    </div>
+</div>
+
+<h2 class="section-title">What You Get</h2>
+<div class="grid grid-3">
+    <div class="card feature-card">
+        <h3>Transaction Tracking</h3>
+        <p>Log income and expenses by category, and filter your history however you need.</p>
+    </div>
+    <div class="card feature-card">
+        <h3>Budgets & Alerts</h3>
+        <p>Set monthly limits per category and get warned before you overspend.</p>
+    </div>
+    <div class="card feature-card">
+        <h3>Visual Dashboard</h3>
+        <p>See your income vs. expenses and spending breakdown at a glance.</p>
+    </div>
+    <div class="card feature-card">
+        <h3>AI Insights</h3>
+        <p>Get spending trend analysis, smart suggestions, and next-month expense predictions.</p>
+    </div>
+    <div class="card feature-card">
+        <h3>Reports</h3>
+        <p>Export your transaction history as CSV or PDF, filtered by month.</p>
+    </div>
+</div>
+{% endblock %}

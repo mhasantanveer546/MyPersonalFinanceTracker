@@ -1,7 +1,7 @@
 from models.transaction import Transaction
 from services.budget_service import get_budgets, get_budget_status, get_budget_alert
 from sqlalchemy import extract
-from datetime import date
+from datetime import date,datetime
 
 def get_previous_month(month):
     year, month_num = map(int, month.split("-"))
@@ -84,3 +84,26 @@ def get_expense_by_category_for_month(user_id, month):
         category_totals[t.category] = category_totals.get(t.category, 0) + t.amount
 
     return category_totals
+
+
+def get_monthly_savings(user_id):
+    monthly_data = get_income_vs_expense_by_month(user_id)
+    current_month = datetime.utcnow().strftime("%Y-%m")
+
+    current_month_savings = 0
+    if current_month in monthly_data:
+        current_month_savings = monthly_data[current_month]["income"] - monthly_data[current_month]["expense"]
+
+    if monthly_data:
+        savings_per_month = [
+            data["income"] - data["expense"] for data in monthly_data.values()
+        ]
+        average_monthly_savings = sum(savings_per_month) / len(savings_per_month)
+    else:
+        average_monthly_savings = 0
+
+    return {
+        "current_month": round(current_month_savings, 2),
+        "average_monthly": round(average_monthly_savings, 2)
+    }
+

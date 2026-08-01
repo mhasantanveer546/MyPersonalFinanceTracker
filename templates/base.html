@@ -2,23 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Finance Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     {% if current_user.is_authenticated %}
-    <nav>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/transactions">Transactions</a>
-        <a href="/budgets">Budgets</a>
-        <a href="/reports">Reports</a>
-        <a href="/profile">Profile</a>
-        <a href="/logout">Logout</a>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/dashboard" class="nav-brand">Finance Tracker</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/transactions">Transactions</a>
+                <a href="/budgets">Budgets</a>
+                <a href="/reports">Reports</a>
+                <a href="/profile">Profile</a>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
     </nav>
     {% endif %}
 
-    <main>
+    <div class="container">
         {% block content %}{% endblock %}
-    </main>
+    </div>
+
+    <footer class="footer">
+        &copy; 2026 Finance Tracker. Built by Hasan.
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

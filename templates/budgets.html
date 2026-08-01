@@ -1,49 +1,35 @@
 {% extends "base.html" %}
-
 {% block title %}Budgets{% endblock %}
-
 {% block content %}
+<div class="page-header">
+    <h1>Budget Management</h1>
+    <a href="/add-budget" class="btn btn-primary">+ Add Budget</a>
+</div>
 
-<h1>Budget Management</h1>
-
-<p>
-    <a href="/add-budget">Add New Budget</a>
-</p>
-
-<table border="1" cellpadding="8">
-
-    <tr>
-        <th>Category</th>
-        <th>Limit Amount</th>
-        <th>Month</th>
-        <th>Action</th>
-    </tr>
-
-    {% for budget in budgets %}
-
-    <tr>
-        <td>{{ budget.category }}</td>
-        <td>{{ budget.limit_amount }}</td>
-        <td>{{ budget.month }}</td>
-        <td>
-            <form method="POST" action="/delete-budget/{{ budget.id }}">
-                <button type="submit">Delete</button>
-            </form>
-        </td>
-    </tr>
-
-    {% else %}
-
-    <tr>
-        <td colspan="4">No budgets found.</td>
-    </tr>
-
-    {% endfor %}
-
-</table>
-
-<p>
-    <a href="/transactions">View Transactions</a>
-</p>
-
+<div class="card table-card mt-4">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr><th>Category</th><th>Limit Amount</th><th>Month</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for budget in budgets %}
+                <tr>
+                    <td>{{ budget.category }}</td>
+                    <td>{{ budget.limit_amount }}</td>
+                    <td>{{ budget.month }}</td>
+                    <td>
+                        <form method="POST" action="/delete-budget/{{ budget.id }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted">No budgets found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="mt-4"><a href="/transactions">View Transactions</a></p>
 {% endblock %}

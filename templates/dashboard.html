@@ -1,219 +1,157 @@
 {% extends "base.html" %}
-
 {% block title %}Dashboard{% endblock %}
-
 {% block content %}
-
-<h1>Dashboard</h1>
-
-<div class="summary-cards">
-
-    <div class="card">
-        <h3>Total Income</h3>
-        <p>{{ summary.total_income }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Total Expense</h3>
-        <p>{{ summary.total_expense }}</p>
-    </div>
-
-    <div class="card">
-        <h3>Balance</h3>
-        <p>{{ summary.balance }}</p>
-    </div>
-
+<div class="page-header">
+    <h1>Dashboard</h1>
 </div>
 
-<h2>Budget Progress</h2>
-
-{% for b in budget_progress %}
-
-<div class="budget-bar">
-
-    <p>
-        {{ b.category }} —
-        {{ b.total_spent }} / {{ b.limit_amount }}
-        ({{ b.percent_used }}%)
-    </p>
-
-    <div class="bar-outer">
-
-        {% if b.percent_used > 100 %}
-            <div class="bar-inner" style="width:100%;"></div>
-        {% else %}
-            <div class="bar-inner" style="width:{{ b.percent_used }}%;"></div>
-        {% endif %}
-
+<div class="grid grid-3">
+    <div class="card stat-card">
+        <div class="stat-icon icon-income">↑</div>
+        <div class="stat-info">
+            <h3>Total Income</h3>
+            <p class="stat-value">{{ summary.total_income }}</p>
+        </div>
     </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-expense">↓</div>
+        <div class="stat-info">
+            <h3>Total Expense</h3>
+            <p class="stat-value">{{ summary.total_expense }}</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-balance">=</div>
+        <div class="stat-info">
+            <h3>Balance</h3>
+            <p class="stat-value">{{ summary.balance }}</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-balance">$</div>
+        <div class="stat-info">
+            <h3>This Month's Savings</h3>
+            <p class="stat-value">{{ monthly_savings.current_month }}</p>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon icon-balance">Ø</div>
+        <div class="stat-info">
+            <h3>Avg Monthly Savings</h3>
+            <p class="stat-value">{{ monthly_savings.average_monthly }}</p>
+        </div>
+    </div>
+</div>
 
-    {% if b.alert %}
-    <p class="budget-alert">{{ b.alert }}</p>
+<div class="mt-4 card">
+    <h2>Budget Progress</h2>
+    {% if budget_progress %}
+    <div class="budget-list">
+        {% for b in budget_progress %}
+        <div class="budget-item">
+            <div class="budget-info">
+                <span class="budget-category">{{ b.category }}</span>
+                <span class="budget-amount">{{ b.total_spent }} / {{ b.limit_amount }} ({{ b.percent_used }}%)</span>
+            </div>
+            <div class="bar-outer">
+                <div class="bar-inner {% if b.percent_used >= 80 %}bar-danger{% endif %}"
+                     style="width: {{ b.percent_used if b.percent_used <= 100 else 100 }}%;"></div>
+            </div>
+            {% if b.alert %}<p class="text-muted" style="color: var(--weak);">{{ b.alert }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No budgets set for this month yet.</p>
+    {% endif %}
+</div>
+
+<div class="mt-4 card">
+    <h2>Insights</h2>
+    {% if spending_insights %}
+    <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem;">
+        {% for insight in spending_insights %}
+        <li class="text-muted">→ {{ insight }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-muted">No spending insights available.</p>
     {% endif %}
 
+    {% if smart_suggestion %}
+    <p class="mt-4"><strong>Suggestion:</strong> <span class="text-muted">{{ smart_suggestion }}</span></p>
+    {% endif %}
+
+    {% if predicted_expense is not none %}
+    <p class="mt-4"><strong>Predicted Next Month's Expense:</strong> <span class="text-muted">{{ predicted_expense }}</span></p>
+    {% else %}
+    <p class="mt-4 text-muted">Not enough data yet to predict next month's expense (need at least 3 months of history).</p>
+    {% endif %}
+
+    {% if unusual_spending %}
+    <h3 class="mt-4">Unusual Spending</h3>
+    <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem;">
+        {% for item in unusual_spending %}
+        <li class="text-muted">→ {{ item.message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </div>
 
-{% else %}
-
-<p>No budgets set for this month yet.</p>
-
-{% endfor %}
-
-<hr>
-
-<h2>Insights</h2>
-
-{% if spending_insights %}
-
-<ul>
-    {% for insight in spending_insights %}
-    <li>{{ insight }}</li>
-    {% endfor %}
-</ul>
-
-{% else %}
-
-<p>No spending insights available.</p>
-
-{% endif %}
-
-{% if smart_suggestion %}
-
-<p>
-    <strong>Suggestion:</strong>
-    {{ smart_suggestion }}
-</p>
-
-{% endif %}
-
-{% if predicted_expense is not none %}
-
-<p>
-    <strong>Predicted Next Month's Expense:</strong>
-    {{ predicted_expense }}
-</p>
-
-{% else %}
-
-<p>
-    Not enough data yet to predict next month's expense
-    (need at least 3 months of history).
-</p>
-
-{% endif %}
-
-{% if unusual_spending %}
-
-<h3>Unusual Spending</h3>
-
-<ul>
-    {% for item in unusual_spending %}
-    <li>{{ item.message }}</li>
-    {% endfor %}
-</ul>
-
-{% endif %}
-
-<hr>
-
-<h2>Expense Distribution</h2>
-
-<canvas id="expenseChart" width="400" height="300"></canvas>
-
-<h2>Income vs Expense (Monthly)</h2>
-
-<canvas id="trendChart" width="600" height="300"></canvas>
+<div class="grid grid-2 mt-4">
+    <div class="card">
+        <h2>Expense Distribution</h2>
+        <div class="chart-wrapper">
+            <canvas id="expenseChart"></canvas>
+        </div>
+    </div>
+    <div class="card">
+        <h2>Income vs Expense (Monthly)</h2>
+        <div class="chart-wrapper">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-
 <script>
-
 const expenseData = {{ expense_by_category | default({}, true) | tojson }};
 const trendData = {{ income_vs_expense | default({}, true) | tojson }};
 
 if (Object.keys(expenseData).length > 0) {
-
     new Chart(document.getElementById("expenseChart"), {
-
         type: "pie",
-
         data: {
-
             labels: Object.keys(expenseData),
-
             datasets: [{
-
                 data: Object.values(expenseData),
-
-                backgroundColor: [
-                    "#4f46e5",
-                    "#8b5cf6",
-                    "#a78bfa",
-                    "#6366f1",
-                    "#7c3aed",
-                    "#c4b5fd"
-                ]
-
+                backgroundColor: ["#4361ee", "#7209b7", "#4895ef", "#b5179e", "#3a86ff", "#ef476f"]
             }]
-
-        }
-
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: "#eef0ff" } } } }
     });
-
 }
 
 const months = Object.keys(trendData).sort();
-
 if (months.length > 0) {
-
     new Chart(document.getElementById("trendChart"), {
-
         type: "line",
-
         data: {
-
             labels: months,
-
             datasets: [
-
-                {
-                    label: "Income",
-                    data: months.map(month => trendData[month].income),
-                    borderColor: "#4f46e5",
-                    fill: false,
-                    tension: 0.3
-                },
-
-                {
-                    label: "Expense",
-                    data: months.map(month => trendData[month].expense),
-                    borderColor: "#dc2626",
-                    fill: false,
-                    tension: 0.3
-                }
-
+                { label: "Income", data: months.map(m => trendData[m].income), borderColor: "#06d6a0", fill: false, tension: 0.3 },
+                { label: "Expense", data: months.map(m => trendData[m].expense), borderColor: "#ef476f", fill: false, tension: 0.3 }
             ]
-
         },
-
         options: {
-
-            responsive: true,
-
-            plugins: {
-
-                legend: {
-                    display: true
-                }
-
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: "#eef0ff" } } },
+            scales: {
+                x: { ticks: { color: "#a4a8d4" }, grid: { color: "rgba(140,130,255,0.1)" } },
+                y: { ticks: { color: "#a4a8d4" }, grid: { color: "rgba(140,130,255,0.1)" } }
             }
-
         }
-
     });
-
 }
-
 </script>
-
 {% endblock %}
