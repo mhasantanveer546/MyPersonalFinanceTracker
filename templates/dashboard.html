@@ -7,6 +7,7 @@
 <h1>Dashboard</h1>
 
 <div class="summary-cards">
+
     <div class="card">
         <h3>Total Income</h3>
         <p>{{ summary.total_income }}</p>
@@ -21,6 +22,7 @@
         <h3>Balance</h3>
         <p>{{ summary.balance }}</p>
     </div>
+
 </div>
 
 <h2>Budget Progress</h2>
@@ -53,6 +55,63 @@
 
 {% endfor %}
 
+<hr>
+
+<h2>Insights</h2>
+
+{% if spending_insights %}
+
+<ul>
+    {% for insight in spending_insights %}
+    <li>{{ insight }}</li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No spending insights available.</p>
+
+{% endif %}
+
+{% if smart_suggestion %}
+
+<p>
+    <strong>Suggestion:</strong>
+    {{ smart_suggestion }}
+</p>
+
+{% endif %}
+
+{% if predicted_expense is not none %}
+
+<p>
+    <strong>Predicted Next Month's Expense:</strong>
+    {{ predicted_expense }}
+</p>
+
+{% else %}
+
+<p>
+    Not enough data yet to predict next month's expense
+    (need at least 3 months of history).
+</p>
+
+{% endif %}
+
+{% if unusual_spending %}
+
+<h3>Unusual Spending</h3>
+
+<ul>
+    {% for item in unusual_spending %}
+    <li>{{ item.message }}</li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+
+<hr>
+
 <h2>Expense Distribution</h2>
 
 <canvas id="expenseChart" width="400" height="300"></canvas>
@@ -66,7 +125,6 @@
 <script>
 
 const expenseData = {{ expense_by_category | default({}, true) | tojson }};
-
 const trendData = {{ income_vs_expense | default({}, true) | tojson }};
 
 if (Object.keys(expenseData).length > 0) {
@@ -76,10 +134,13 @@ if (Object.keys(expenseData).length > 0) {
         type: "pie",
 
         data: {
+
             labels: Object.keys(expenseData),
 
             datasets: [{
+
                 data: Object.values(expenseData),
+
                 backgroundColor: [
                     "#4f46e5",
                     "#8b5cf6",
@@ -88,7 +149,9 @@ if (Object.keys(expenseData).length > 0) {
                     "#7c3aed",
                     "#c4b5fd"
                 ]
+
             }]
+
         }
 
     });
@@ -113,17 +176,33 @@ if (months.length > 0) {
                     label: "Income",
                     data: months.map(month => trendData[month].income),
                     borderColor: "#4f46e5",
-                    fill: false
+                    fill: false,
+                    tension: 0.3
                 },
 
                 {
                     label: "Expense",
                     data: months.map(month => trendData[month].expense),
                     borderColor: "#dc2626",
-                    fill: false
+                    fill: false,
+                    tension: 0.3
                 }
 
             ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+
+                legend: {
+                    display: true
+                }
+
+            }
 
         }
 

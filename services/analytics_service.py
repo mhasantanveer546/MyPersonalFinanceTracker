@@ -1,6 +1,13 @@
 from models.transaction import Transaction
 from services.budget_service import get_budgets, get_budget_status
+from sqlalchemy import extract
+from datetime import date
 
+def get_previous_month(month):
+    year, month_num = map(int, month.split("-"))
+    if month_num == 1:
+        return f"{year - 1}-12"
+    return f"{year}-{month_num - 1:02d}"
 
 def get_summary(user_id):
     transactions = Transaction.query.filter_by(user_id=user_id).all()
@@ -51,3 +58,19 @@ def get_budget_progress(user_id, month):
             progress.append(status["budget"])
 
     return progress
+
+def get_expense_by_category_for_month(user_id, month):
+    year, month_num = month.split("-")
+
+    transactions = Transaction.query.filter(
+        Transaction.user_id == user_id,
+        Transaction.type == "expense",
+        extract("year", Transaction.date) == int(year),
+        extract("month", Transaction.date) == int(month_num)
+    ).all()
+
+    category_totals = {}
+    for t in transactions:
+        category_totals[t.category] = category_totals.get(t.category, 0) + t.amount
+
+    return category_totals
