@@ -1,8 +1,17 @@
-from flask import Blueprint, Response
+from flask import Blueprint, Response, render_template
 from flask_login import login_required, current_user
+from services.analytics_service import get_summary, get_expense_by_category
 from analytics.reports import generate_csv_report, generate_pdf_report
 
 report_bp = Blueprint("report", __name__)
+
+
+@report_bp.route("/reports")
+@login_required
+def reports_page():
+    summary = get_summary(current_user.id)
+    expense_by_category = get_expense_by_category(current_user.id)
+    return render_template("reports.html", summary=summary, expense_by_category=expense_by_category)
 
 
 @report_bp.route("/reports/csv")

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h1>Reports</h1>
+
+<h2>Spending Summary</h2>
+<p>Total Income: {{ summary.total_income }}</p>
+<p>Total Expenses: {{ summary.total_expense }}</p>
+<p>Balance: {{ summary.balance }}</p>
+
+<h2>Category-wise Breakdown</h2>
+<table border="1" cellpadding="8">
+    <tr><th>Category</th><th>Total Spent</th></tr>
+    {% for category, amount in expense_by_category.items() %}
+    <tr><td>{{ category }}</td><td>{{ amount }}</td></tr>
+    {% else %}
+    <tr><td colspan="2">No expenses recorded yet.</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Export</h2>
+<p>
+    <a href="/reports/csv">Download CSV</a>
+    |
+    <a href="/reports/pdf">Download PDF</a>
+</p>
+{% endblock %}
