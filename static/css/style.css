@@ -179,6 +179,20 @@ select option { background: var(--bg-1); color: var(--text); }
 .btn-block { width: 100%; }
 .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
 
+/* Sets native browser UI controls to dark mode (makes icons light white) */
+input[type="date"],
+input[type="month"] {
+    color-scheme: dark;
+    color: #ffffff; /* Sets input text color to white */
+}
+
+/* Forces the calendar icon to pure white across WebKit/Blink browsers */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 /* ---------- Tables ---------- */
 .table-card { padding: 0; overflow: hidden; }
 .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
