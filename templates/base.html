@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Finance Tracker{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1); /* Inverts dark icon to white */
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     {% if current_user.is_authenticated %}
